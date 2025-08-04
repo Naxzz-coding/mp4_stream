@@ -28,18 +28,19 @@ app.post("/upload", upload.single("video"), (req, res) => {
 
   if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
 
-  const ffmpeg = spawn("ffmpeg", [
-    "-i", inputPath,
-    "-c:v", "libx264",
-    "-preset", "veryfast",
-    "-g", "50",
-    "-sc_threshold", "0",
-    "-f", "hls",
-    "-hls_time", "2",
-    "-hls_list_size", "5",
-    "-hls_flags", "delete_segments",
-    path.join(outputDir, "stream.m3u8")
-  ]);
+  const ffmpegPath = require("ffmpeg-static");
+const ffmpeg = spawn(ffmpegPath, [
+  "-i", inputPath,
+  "-c:v", "libx264",
+  "-preset", "veryfast",
+  "-g", "50",
+  "-sc_threshold", "0",
+  "-f", "hls",
+  "-hls_time", "2",
+  "-hls_list_size", "5",
+  "-hls_flags", "delete_segments",
+  path.join(outputDir, "stream.m3u8")
+]);
 
   ffmpeg.stderr.on("data", (data) => {
     console.log("ffmpeg:", data.toString());
