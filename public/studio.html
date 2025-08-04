@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Studio MP4 Upload</title>
+</head>
+<body>
+  <h2>Upload MP4 untuk streaming</h2>
+  <input type="file" id="videoFile" accept="video/mp4" />
+  <br><br>
+  <button onclick="uploadVideo()">Upload & Stream</button>
+  <p id="status"></p>
+
+  <script>
+    function uploadVideo() {
+      const fileInput = document.getElementById('videoFile');
+      const status = document.getElementById('status');
+      const file = fileInput.files[0];
+      if (!file) return alert("Sila pilih fail MP4.");
+
+      const formData = new FormData();
+      formData.append("video", file);
+
+      status.innerText = "Sedang muat naik & convert...";
+
+      fetch("/upload", {
+        method: "POST",
+        body: formData
+      })
+      .then(res => res.text())
+      .then(msg => status.innerText = msg)
+      .catch(err => {
+        console.error(err);
+        status.innerText = "Gagal muat naik.";
+      });
+    }
+  </script>
+</body>
+</html>
